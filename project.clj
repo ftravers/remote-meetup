@@ -6,6 +6,6 @@
   :dependencies [[org.clojure/clojure "1.8.0"]]
 
   ;; modify below path to reflect current project
-  :source-paths ["src/aoc2018_13"]
-  :test-paths ["test/aoc2018_13"]
+  ;; :source-paths ["src/aoc2018_13"]
+  ;; :test-paths ["test/aoc2018_13"]
   )
