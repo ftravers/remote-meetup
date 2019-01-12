@@ -42,7 +42,7 @@
   \v []
   })
 
-(defn move-cart [{:keys [pos dir turn] :as cart} tracks]
+(defn move-cart [tracks {:keys [pos dir turn] :as cart}] ;tracks is the first param, so that move-carts can (partial move-cart tracks).
   {:pre [(cart? cart) (tracks? tracks)] :post [(cart? %)]}
   (let [
         deltas (dir2delta dir)
@@ -51,23 +51,35 @@
         ]
     {:pos {:row (+ (:row pos) (:row deltas)) :col (+ (:col pos) (:col deltas))}
      :dir (if turning (-> dir&track2delta dir track) (-> dir&turn2delta dir turn))
-     :turn (if turning (mod (inc turn) 3) turn)})
-  )
+     :turn (if turning (mod (inc turn) 3) turn)}))
+
+;(gen-class :name "aoc2018_13.eagle.CartCrash" :extends RuntimeException)
 
 (defn sort-carts "Sort the carts as they take turns to move (depending on their current positions)." [carts]
  {:pre [(carts? carts)] :post [(carts? %)]}
   (let [
-    row2col2cart (reduce
-      (fn [row2col2cart {pos :pos :as cart}]
-          {:pre [(cart? cart)]}
-          (let [row-map (or (row2col2cart (:row pos)) (sorted-map))
-                _ (assert (nil? (row-map (:col pos))))
-                row-map-new (assoc row-map (:col pos) cart)])
-        )
-      (sorted-map)
-      carts)]
+    row2col2cart
+      (reduce
+          (fn [row2col2cart {pos :pos :as cart}]
+              {:pre [(cart? cart)]}
+              (let [row-map (or (row2col2cart (:row pos)) (sorted-map))
+                    row-map-new (assoc row-map (:col pos) cart)]
+                 (assoc row2col2cart (:row pos) row-map-new)))
+          (sorted-map)
+          carts)]
       (flatten (map (partial map val) (vals row2col2cart)))) ;flatten doesn't work on maps: (flatten {:i 1}) ;=> nil
 )
+
+(defn move-all "Expects the carts to be sorted already. Move all carts by one step. Don't detect crashes. Return carts in the order they took turns, but don't re-sort. That allows us to identify the first crash (if any) outside of this functon."
+ [tracks carts]
+  {:pre [(tracks? tracks) (carts? carts)] :post [(or (carts? %) (coordinates? %))]}
+  (let [moved-carts (map (partial move-cart tracks) carts)]
+    (try
+      (sort-carts carts)
+      (catch Exception e
+        (let [coords (:coordinates (ex-data e))]
+          (if coords coords (throw e))
+        )))))
 
 (defn -main [& args]
   (let [chars (-> args first slurp parse-lines)
@@ -79,6 +91,6 @@
                             :let [cart-dir (-> chars (nth row-idx) (nth col-idx))]
                             :when cart-dir]
                             {:pos {:row row-idx, :col col-idx} :dir cart-dir :turn 0})
-        _ (assert (every? cart? initial-carts))
+        initial-cards-sorted (sort-carts initial-carts)
         ])
   )
