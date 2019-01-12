@@ -96,3 +96,7 @@ or as a data structure:
 :in: tracks-n-carts
 :processing: extract list of all carts & directions.
 :out: carts
+
+** any-collisions?
+:in: carts
+check to see if any of the carts now occupy the same coordinates
