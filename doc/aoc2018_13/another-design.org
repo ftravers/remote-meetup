@@ -34,7 +34,7 @@ The above is READING-ORDER.
   (def tracks
     [[\/ \- \\]
 <<<<<<< HEAD
-     [\| \space \|]
+     [\| sp \|]
      [\| \. \|]])
 =======
      [\| sp \|]
