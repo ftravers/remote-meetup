@@ -35,14 +35,14 @@
   \^ {}
   \v {}
   }) ;not for junction +
-(def dir&turn2delta {
+(def dir&turn2delta { ;order of turns: left, straight, right
   \< []
   \> []
   \^ []
   \v []
   })
 
-(defn move-cart [tracks {:keys [pos dir turn] :as cart}] ;tracks is the first param, so that move-carts can (partial move-cart tracks).
+(defn move-cart [tracks {:keys [pos dir turn] :as cart}] ;tracks is the first param, if we need to (partial move-cart tracks).
   {:pre [(cart? cart) (tracks? tracks)] :post [(cart? %)]}
   (let [
         deltas (dir2delta dir)
@@ -53,11 +53,12 @@
      :dir (if turning (-> dir&track2delta dir track) (-> dir&turn2delta dir turn))
      :turn (if turning (mod (inc turn) 3) turn)}))
 
-;(gen-class :name "aoc2018_13.eagle.CartCrash" :extends RuntimeException)
+(defn sorted-carts? "Validate result of sort-carts." [row2col2cart]
+  (and (sorted? row2col2cart) (every? sorted? row2col2cart) (every? (comp (partial every? cart?) vals) row2col2cart)))
 
 (defn sort-carts "Sort the carts as they take turns to move (depending on their current positions). Expect no crashes. Return a sorted-map {row => sorted-map { column => cart}}."
  [carts]
- {:pre [(carts? carts)] :post [(sorted? %) (every? sorted? %) (every? (comp (partial every? cart?) vals) %)]}
+ {:pre [(carts? carts)] :post [(sorted-carts? %)]}
       (reduce
           (fn [row2col2cart {pos :pos :as cart}]
               {:pre [(cart? cart)]}
@@ -68,18 +69,23 @@
           (sorted-map)
           carts))
 
-(defn flatten-sorted-carts [row2col2cart] {:post [(every? cart? %)]}
-  (flatten (map (partial map val) (vals row2col2cart)))) ;flatten doesn't work on maps: (flatten {:i 1}) ;=> nil
+(defn flatten-sorted-carts [row2col2cart] {:pre [(sorted-carts? row2col2cart)] :post [(every? cart? %)]}
+  (flatten (map (partial map val) (vals row2col2cart))))
 
 (defn move-all "Expects the carts to be sorted already. Move all carts by one step. On success, return seq of (updated) carts, but not re-sorted. On crash, return coordinates."
- [tracks carts]
-  {:pre [(tracks? tracks) (carts? carts)] :post [(or (carts? %) (coordinates? %))]}
+ [tracks row2col2cart]
+  {:pre [(sorted-carts? row2col2cart)] :post [(or (carts? %) (coordinates? %))]}
   ;Not using map, because on every step we check for a crash. Hence not: (map (partial move-cart tracks) carts)
   ;Following starts with a full list of carts, instead of empty (as is common with reduce). It updates each cart. That way it can detect the first crash, too.
-  (reduce
-    (fn [carts cart]
-      )
-    carts carts))
+  (-> (reduce
+        (fn [row2col2cart cart]
+          (let [moved (move-cart cart)
+                pos (:pos moved)]
+            (if (-> row2col2cart (:row pos) (:col pos))
+              (reduced pos)
+              moved)))
+        row2col2cart (flatten-sorted-carts row2col2cart))
+      flatten-sorted-carts))
 
 #_(defn detect-crash "Take the old seq. of carts, sorted. Take a new seq of carts, not re-sorted (hence in the old order, but with updated :pos). Return position map of the first crash, or nil."
   [old new]
