@@ -1,7 +1,7 @@
 (ns aoc2018-13.eagle)
 
 ; => seq of rows; each row is a seq of char.
-(defn parse-lines [text] {:pre [(every? string? text)] :post [(every? (partial every? char?) %)]}
+(defn parse-lines [text] {:pre [(string? text)] :post [(every? (partial every? char?) %)]}
   (let [lines (clojure.string/split text #"\n")]
     (map seq lines)
   ))
@@ -12,10 +12,11 @@
   (and (vector? matrix) (every? vector? matrix)
        (every? (fn [row] (every? (some-fn track-chars (partial = \space)) row)) matrix)))
 
-(defn chars-to-tracks "Take output of function parse-lines. Replace any car directions <>v^ with respective track direction." [chars]
+(defn chars-to-tracks "Take output of function parse-lines. Replace any car directions <>v^ with respective track direction."
+  [chars]
   {:pre [(every? (partial every? char?) chars)]
    :post [(tracks? %)]}
-  (mapv (partial mapv {\< \-, \> \-, \v \| \^ \|}) chars))
+  (mapv (partial mapv #(get {\< \-, \> \-, \v \| \^ \|} % %)) chars))
 
 (defn coordinates? [{:keys [row col]}]
             (every? (every-pred int? (partial < -1)) [row col]))
@@ -102,6 +103,7 @@
                             :let [cart-dir (-> chars (nth row-idx) (nth col-idx))]
                             :when cart-dir]
                             {:pos {:row row-idx, :col col-idx} :dir cart-dir :turn 0})
+        _ (println initial-carts)
         row2col2cart (sort-carts initial-carts)
         find-crash (fn [row2col2cart]
                     {:pre [(sorted-carts? row2col2cart)]} ;(loop) doesn't allow preconditions. That's why we use a separate function.
