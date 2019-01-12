@@ -111,6 +111,25 @@ or as a data structure:
 :in: carts
 check to see if any of the carts now occupy the same coordinates
 
+* Bonus Functions
+
+It can be nice to visualize results, so create a function that prints
+out the tracks and carts for display.
+
+** print-tracks-n-carts
+:in: tracks
+:in: carts
+:processing: create a printable string that has :max-columns width, and
+:max-rows height so that when you print it in the repl, it looks nice.
+:out: a nicely (in the repl) printing string that represents the
+tracks and carts, eg:
+"\/-\n| \n" which when displayed in repl looks like:
+
+: /-
+: |
+
+etc...
+
 * Tests
 
 some testdata can be found at ~test/aoc2018_13~
