@@ -58,11 +58,15 @@
  {:pre [(carts? carts)] :post [(carts? %)]}
   (let [
     row2col2cart (reduce
-      (fn [row2col2cart cart] {:pre [(cart? cart)]}
+      (fn [row2col2cart {pos :pos :as cart}]
+          {:pre [(cart? cart)]}
+          (let [row-map (or (row2col2cart (:row pos)) (sorted-map))
+                _ (assert (nil? (row-map (:col pos))))
+                row-map-new (assoc row-map (:col pos) cart)])
         )
       (sorted-map)
       carts)]
-      (flatten (map (partial map val) row2col2cart))) ;flatten doesn't work on maps: (flatten {:i 1}) ;=> nil
+      (flatten (map (partial map val) (vals row2col2cart)))) ;flatten doesn't work on maps: (flatten {:i 1}) ;=> nil
 )
 
 (defn -main [& args]
