@@ -110,3 +110,17 @@ or as a data structure:
 ** any-collisions?
 :in: carts
 check to see if any of the carts now occupy the same coordinates
+
+* Tests
+
+some testdata can be found at ~test/aoc2018_13~
+
+file: small-data-1.1.txt
+
+after one tick of the game should look like state in 
+
+file: small-data-1.2.txt
+
+after another tick:
+
+file: small-data-1.3.txt
