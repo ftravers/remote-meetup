@@ -73,13 +73,19 @@
 (defn move-all "Expects the carts to be sorted already. Move all carts by one step. Don't detect crashes. Return carts in the order they took turns, but don't re-sort. That allows us to identify the first crash (if any) outside of this functon."
  [tracks carts]
   {:pre [(tracks? tracks) (carts? carts)] :post [(or (carts? %) (coordinates? %))]}
-  (let [moved-carts (map (partial move-cart tracks) carts)]
-    (try
+  (map (partial move-cart tracks) carts))
+    #_(try
       (sort-carts carts)
       (catch Exception e
         (let [coords (:coordinates (ex-data e))]
           (if coords coords (throw e))
-        )))))
+        )))
+
+(defn detect-crash "Take the old seq. of carts, sorted. Take a new seq of carts, not re-sorted (hence in the old order, but with updated :pos). Return position map of the first crash, or nil."
+  [old new]
+  {:pre [(carts? old) (carts? new)] :post [(or (coordinates? %) (nil? %))]}
+  :TODO
+)
 
 (defn -main [& args]
   (let [chars (-> args first slurp parse-lines)
