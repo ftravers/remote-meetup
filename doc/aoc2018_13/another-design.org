@@ -30,10 +30,11 @@ The above is READING-ORDER.
    The following:
 
 #+BEGIN_SRC clojure
+  (def sp "One space character. This makes examples in code more readable." \space)
   (def tracks
     [[\/ \- \\]
-     [\| \. \|]
-     [\| \. \|]])
+     [\| sp \|]
+     [\| sp \|]])
 #+END_SRC
 
 describes the following visual tracks:
@@ -60,13 +61,13 @@ describes the following visual tracks:
 :in: tracks, (see above)
 :processing: based on the carts current location, direction, next
 turn, and the track(s) it is on, calculate its next
-coord/dir/next-turn. 
-:out: {:col 4 :row 1 :dir :right :next-turn :right} 
+coord/dir/next-turn.
+:out: {:col 4 :row 1 :dir :right :next-turn :right}
 
 ** get-track-segment
 :in: tracks
 :in: a coordinate
-:out: what the track piece under that coordinate is.  One of: 
+:out: what the track piece under that coordinate is.  One of:
 #{\- \| \\ \/ \+}
 
 ** parse-input
@@ -76,8 +77,8 @@ coord/dir/next-turn.
 #+BEGIN_SRC clojure
   (def tracks-n-carts
     [[\/ \- \\]
-     [\| \. \v]
-     [\| \. \|]])
+     [\| sp \v]
+     [\| sp \|]])
 #+END_SRC
 
 
@@ -106,7 +107,7 @@ or as a data structure:
 #+BEGIN_SRC clojure
   (def tracks
     [[\/ \- \- \-]
-     [\| \. \. \.]])
+     [\| sp sp sp]])
 #+END_SRC
 :out: the tracks data structure
 
@@ -149,7 +150,7 @@ some testdata can be found at ~test/aoc2018_13~
 
 file: small-data-1.1.txt
 
-after one tick of the game should look like state in 
+after one tick of the game should look like state in
 
 file: small-data-1.2.txt
 
