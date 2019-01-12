@@ -1,4 +1,29 @@
-* Data Structures:
+* Data & Data Structures:
+** symbols used
+
+use character literals
+
+** Coordinates:
+
+column increases to the right.
+row increases down.
+
+#+BEGIN_SRC text
+ 0 1 2 3   -->   col
+0
+1
+2
+3
+
+|
+v
+
+row
+#+END_SRC
+
+{:row 0 :col 1} < {:row 1 :col 0}
+
+The above is READING-ORDER.
 
 ** The tracks:
 
@@ -6,22 +31,17 @@
 
 #+BEGIN_SRC clojure
   (def tracks
-    [{:x 2 :y 0 :track-piece :fs}
-     {:x 3 :y 0 :track-piece :horiz}
-     {:x 0 :y 1 :track-piece :fs}
-     {:x 1 :y 1 :track-piece :horiz}
-     {:x 2 :y 1 :track-piece :int}
-     {:x 3 :y 1 :track-piece :horiz}
-     {:x 0 :y 2 :track-piece :vert}
-     {:x 2 :y 2 :track-piece :vert}])
+    [[\/ \- \\]
+     [\| \. \|]
+     [\| \. \|]])
 #+END_SRC
 
 describes the following visual tracks:
 
 #+BEGIN_SRC text
- 0123
-0  /-
-1/-+-
+ 012
+0/-\
+1| v
 2| |
 #+END_SRC
 
@@ -29,50 +49,37 @@ describes the following visual tracks:
 
 #+BEGIN_SRC clojure
   (def carts
-    [{:x 3 :y 2 :dir :up :next-turn :left}
-     {:x 2 :y 1 :dir :right :next-turn :straight}])
+    [{:col 3 :row 2 :dir \> :next-turn :left}
+     {:col 2 :row 1 :dir \v :next-turn :straight}])
 #+END_SRC
 
 * Functions breakdown
 
 ** cart-next-state
-:in: a cart, {:x 3 :y 2 :dir :up :next-turn :straight}
+:in: a cart, {:col 3 :row 2 :dir \> :next-turn :left}
 :in: tracks, (see above)
-:processing: based on the carts current location, direction, last
+:processing: based on the carts current location, direction, next
 turn, and the track(s) it is on, calculate its next
 coord/dir/next-turn. 
-:out: {:x 4 :y 1 :dir :right :next-turn :right} 
+:out: {:col 4 :row 1 :dir :right :next-turn :right} 
 
 ** get-track-segment
 :in: tracks
 :in: a coordinate
 :out: what the track piece under that coordinate is.  One of: 
-#{:horiz :vert :bs (backslash) :fs (forwardslash)}
+#{\- \| \\ \/ \+}
 
 ** parse-input
-:in: a file where each line is composed of the symbols: | - / \ + < >
-^ v.
+:in: a file where each line is composed of the symbols: | - / \ + < > ^ v.
 :out: a data structure like:
 
 #+BEGIN_SRC clojure
-  (def tracks-n-carts 
-    [{:x 1 :y 3 :symbol :int}
-     {:x 1 :y 2 :symbol :vert}])
+  (def tracks-n-carts
+    [[\/ \- \\]
+     [\| \. \v]
+     [\| \. \|]])
 #+END_SRC
 
-: all input symbols: |-/\+v^<>
-
-~:symbol~ can be any of:
-
-: pipe |          :vert
-: dash -          :horiz
-: forward slash / :fs
-: backslash \     :bs
-: intersection +  :int
-: down v          :down
-: up ^            :up
-: left <          :left
-: right >         :right
 
 ** make-tracks
 :in: tracks-n-carts (see above)
@@ -82,6 +89,7 @@ carts obscure what is under them for example:
 #+BEGIN_SRC text
  0123
 0/->-
+1|
 #+END_SRC
 
 Needs to be converted to just tracks, i.e. with the cart effectively
@@ -90,15 +98,15 @@ not present:
 #+BEGIN_SRC text
  0123
 0/---
+1|
 #+END_SRC
 
 or as a data structure:
+
 #+BEGIN_SRC clojure
   (def tracks
-    [{:x 0 :y 0 :track :fs}
-     {:x 1 :y 0 :track :horiz}
-     {:x 2 :y 0 :track :horiz}
-     {:x 3 :y 0 :track :horiz}])
+    [[\/ \- \- \-]
+     [\| \. \. \.]])
 #+END_SRC
 :out: the tracks data structure
 
@@ -110,6 +118,11 @@ or as a data structure:
 ** any-collisions?
 :in: carts
 check to see if any of the carts now occupy the same coordinates
+
+** sort-carts
+:in: carts vector
+:out: carts sorted by position {:row 0 :column 1} < {:row 1 :col 0}
+
 
 * Bonus Functions
 
