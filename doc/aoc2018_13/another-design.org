@@ -62,6 +62,16 @@ coord/dir/last-turn.
 
 ~:symbol~ can be any of:
 
+| pipe             | :vert  |
+| dash (-)         | :horiz |
+| forward slash    | :fs    |
+| back slash       | :bs    |
+| intersection (+) | :int   |
+| down (v)         | :down  |
+| up (^)           | :up    |
+| left (<)         | :left  |
+| right (>)        | :right |
+
 |-/\+v^<>
 
 ** make-tracks
