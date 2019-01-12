@@ -11,27 +11,27 @@ The input file carries two sets of information:
 2. The initial position and direction of carts. That's an initial value of our state.
 
 ### Naming the cordinates
-What's the easiest way to parse the input text file into a matrix? By lines, so the matrix is an array of rows, each row an array of characters (or derivatives):
+What's the easiest way to parse the input text file? By lines. That gives us a sequence of rows, each row a sequence of characters:
 
 ```
 (defn parse-lines [text]
   (let [lines (clojure.string/split text #"\n")]
-    (mapv (comp vec seq) lines)
-  )) ;=> 2D vec: [row dimension => vec: column dimension => char]
+    (map seq lines)
+  )) ;=> 2D: seq of rows, each row a seq of char
 ```
 
-When representing carts, we chose a diagram/graph notation, where "x" denotes a column, "y" indicates a row. Hence, when accessing the tracks, don't pass the coordinates as `[x y]` (). Remember that the first coordinate is a row, the second is the column (hence pass them as `[y x]`).
+When representing carts, instead of "x" and "y", we store coordinates as `:row, :col`. When accessing the tracks, pass `row` first, then `col`. Also, `row` increases from the top towards down. That's different to common vertical axis in graphs.
 
 ### State
 All the state seems to be the carts: their positions, current direction and (relative) direction of their next turn. Can you think of anything else?
 
 * carts: a `seq` of cart
 
-* cart: Coordinates, a current (absolute) direction, and a (relative) direction of their next turn.
+* cart: Coordinates, current current (absolute) direction, and a (relative) direction of their next turn.
 
-  * `x` (column) and `y` (row). Or a vector `[column row]`.
-  * direction: A current direction. A `vector` of change of the two respective coordinates. The possible changes are -1, 0 or +1. All possible directions: up `[-1 0]`, right `[0 1]`, down `[1 0]`, left `[0 -1]`.
-  * turn: (Relative) direction of the next turn: Left, straight, right (then repeated). It can be an `int` 0..2. At every turn, increase it with `inc`, then modulo 3 with `mod (inc next-turn) 3)`. (0..2 can also serve as an index into an array, which would store any higher structures stored for computation of the absolute direction at the next turn.)
+  * `pos`: The current position. A map `{:row 0-based-index :col 0-based-index}`.
+  * `dir`: The current direction. A `vector` of change of the two respective coordinates. The possible changes are -1, 0 or +1. All possible directions: up `[-1 0]`, right `[0 1]`, down `[1 0]`, left `[0 -1]`.
+  * `turn`: (Relative) direction of the next turn: Left, straight, right (then repeated). It can be an `int` 0..2. At every turn, increase it with `inc`, then modulo 3 with `mod (inc next-turn) 3)`. (0..2 can also serve as an index into an array, which would store any higher structures stored for computation of the absolute direction at the next turn.)
 
 ### Symbolic representation of directions
 There are two types: carts have current directions one way (two horizontal, two vertical). Tracks have directions that are bothdirectional (one horizontal, vertical, two turns). Tracks also have junction.
