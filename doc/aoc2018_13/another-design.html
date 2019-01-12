@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-01-11 Fri 17:08 -->
+<!-- 2019-01-11 Fri 17:23 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>&lrm;</title>
@@ -232,31 +232,31 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org5fa969b">1. Data Structures:</a>
+<li><a href="#org1b29fe6">1. Data Structures:</a>
 <ul>
-<li><a href="#org89afcac">1.1. The tracks:</a></li>
-<li><a href="#orgb03ebff">1.2. carts:</a></li>
+<li><a href="#org07862ca">1.1. The tracks:</a></li>
+<li><a href="#org8267a9f">1.2. carts:</a></li>
 </ul>
 </li>
-<li><a href="#orgb98e700">2. Functions breakdown</a>
+<li><a href="#orgd2d15cb">2. Functions breakdown</a>
 <ul>
-<li><a href="#org395d5bf">2.1. cart-next-state</a></li>
-<li><a href="#org5e91b3a">2.2. get-track-segment</a></li>
-<li><a href="#orgac50798">2.3. parse-input</a></li>
-<li><a href="#org545ec66">2.4. make-tracks</a></li>
-<li><a href="#orgdf3826b">2.5. make-carts</a></li>
-<li><a href="#org9e2deb3">2.6. any-collisions?</a></li>
+<li><a href="#org8a4c497">2.1. cart-next-state</a></li>
+<li><a href="#org0e7024d">2.2. get-track-segment</a></li>
+<li><a href="#org32c6b1b">2.3. parse-input</a></li>
+<li><a href="#org3957b59">2.4. make-tracks</a></li>
+<li><a href="#org39eee10">2.5. make-carts</a></li>
+<li><a href="#org21139b2">2.6. any-collisions?</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org5fa969b" class="outline-2">
-<h2 id="org5fa969b"><span class="section-number-2">1</span> Data Structures:</h2>
+<div id="outline-container-org1b29fe6" class="outline-2">
+<h2 id="org1b29fe6"><span class="section-number-2">1</span> Data Structures:</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-org89afcac" class="outline-3">
-<h3 id="org89afcac"><span class="section-number-3">1.1</span> The tracks:</h3>
+<div id="outline-container-org07862ca" class="outline-3">
+<h3 id="org07862ca"><span class="section-number-3">1.1</span> The tracks:</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 The following:
@@ -289,39 +289,39 @@ describes the following visual tracks:
 </div>
 </div>
 
-<div id="outline-container-orgb03ebff" class="outline-3">
-<h3 id="orgb03ebff"><span class="section-number-3">1.2</span> carts:</h3>
+<div id="outline-container-org8267a9f" class="outline-3">
+<h3 id="org8267a9f"><span class="section-number-3">1.2</span> carts:</h3>
 <div class="outline-text-3" id="text-1-2">
 <div class="org-src-container">
 <pre class="src src-clojure">(<span style="color: #8ac6f2; font-weight: bold;">def</span> <span style="color: #cae682;">carts</span>
-  [{<span style="color: #e5786d;">:x</span> 3 <span style="color: #e5786d;">:y</span> 2 <span style="color: #e5786d;">:dir</span> <span style="color: #e5786d;">:up</span> <span style="color: #e5786d;">:last-turn</span> <span style="color: #e5786d;">:left</span>}
-   {<span style="color: #e5786d;">:x</span> 2 <span style="color: #e5786d;">:y</span> 1 <span style="color: #e5786d;">:dir</span> <span style="color: #e5786d;">:right</span> <span style="color: #e5786d;">:last-turn</span> <span style="color: #e5786d;">:straight</span>}])
+  [{<span style="color: #e5786d;">:x</span> 3 <span style="color: #e5786d;">:y</span> 2 <span style="color: #e5786d;">:dir</span> <span style="color: #e5786d;">:up</span> <span style="color: #e5786d;">:next-turn</span> <span style="color: #e5786d;">:left</span>}
+   {<span style="color: #e5786d;">:x</span> 2 <span style="color: #e5786d;">:y</span> 1 <span style="color: #e5786d;">:dir</span> <span style="color: #e5786d;">:right</span> <span style="color: #e5786d;">:next-turn</span> <span style="color: #e5786d;">:straight</span>}])
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgb98e700" class="outline-2">
-<h2 id="orgb98e700"><span class="section-number-2">2</span> Functions breakdown</h2>
+<div id="outline-container-orgd2d15cb" class="outline-2">
+<h2 id="orgd2d15cb"><span class="section-number-2">2</span> Functions breakdown</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org395d5bf" class="outline-3">
-<h3 id="org395d5bf"><span class="section-number-3">2.1</span> cart-next-state</h3>
+<div id="outline-container-org8a4c497" class="outline-3">
+<h3 id="org8a4c497"><span class="section-number-3">2.1</span> cart-next-state</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
-:in: a cart, {:x 3 :y 2 :dir :up :last-turn :straight}
+:in: a cart, {:x 3 :y 2 :dir :up :next-turn :straight}
 :in: tracks, (see above)
 :processing: based on the carts current location, direction, last
 turn, and the track(s) it is on, calculate its next
-coord/dir/last-turn. 
-:out: {:x 4 :y 1 :dir :right :last-turn :right} 
+coord/dir/next-turn. 
+:out: {:x 4 :y 1 :dir :right :next-turn :right} 
 </p>
 </div>
 </div>
 
-<div id="outline-container-org5e91b3a" class="outline-3">
-<h3 id="org5e91b3a"><span class="section-number-3">2.2</span> get-track-segment</h3>
+<div id="outline-container-org0e7024d" class="outline-3">
+<h3 id="org0e7024d"><span class="section-number-3">2.2</span> get-track-segment</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 :in: tracks
@@ -332,8 +332,8 @@ coord/dir/last-turn.
 </div>
 </div>
 
-<div id="outline-container-orgac50798" class="outline-3">
-<h3 id="orgac50798"><span class="section-number-3">2.3</span> parse-input</h3>
+<div id="outline-container-org32c6b1b" class="outline-3">
+<h3 id="org32c6b1b"><span class="section-number-3">2.3</span> parse-input</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 :in: a file where each line is composed of the symbols: | - / \ + &lt; &gt;
@@ -343,80 +343,37 @@ coord/dir/last-turn.
 
 <div class="org-src-container">
 <pre class="src src-clojure">(<span style="color: #8ac6f2; font-weight: bold;">def</span> <span style="color: #cae682;">tracks-n-carts</span> 
-  [{<span style="color: #e5786d;">:x</span> 1 <span style="color: #e5786d;">:y</span> 3 <span style="color: #e5786d;">:symbol</span> <span style="color: #e5786d;">:inter</span>}
+  [{<span style="color: #e5786d;">:x</span> 1 <span style="color: #e5786d;">:y</span> 3 <span style="color: #e5786d;">:symbol</span> <span style="color: #e5786d;">:int</span>}
    {<span style="color: #e5786d;">:x</span> 1 <span style="color: #e5786d;">:y</span> 2 <span style="color: #e5786d;">:symbol</span> <span style="color: #e5786d;">:vert</span>}])
 </pre>
 </div>
+
+<pre class="example">
+all input symbols: |-/\+v^&lt;&gt;
+
+</pre>
 
 <p>
 <code>:symbol</code> can be any of:
 </p>
 
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<pre class="example">
+pipe |          :vert
+dash -          :horiz
+forward slash / :fs
+backslash \     :bs
+intersection +  :int
+down v          :down
+up ^            :up
+left &lt;          :left
+right &gt;         :right
 
-
-<colgroup>
-<col  class="org-left" />
-
-<col  class="org-left" />
-</colgroup>
-<tbody>
-<tr>
-<td class="org-left">pipe</td>
-<td class="org-left">:vert</td>
-</tr>
-
-<tr>
-<td class="org-left">dash (-)</td>
-<td class="org-left">:horiz</td>
-</tr>
-
-<tr>
-<td class="org-left">forward slash</td>
-<td class="org-left">:fs</td>
-</tr>
-
-<tr>
-<td class="org-left">back slash</td>
-<td class="org-left">:bs</td>
-</tr>
-
-<tr>
-<td class="org-left">intersection (+)</td>
-<td class="org-left">:int</td>
-</tr>
-
-<tr>
-<td class="org-left">down (v)</td>
-<td class="org-left">:down</td>
-</tr>
-
-<tr>
-<td class="org-left">up (^)</td>
-<td class="org-left">:up</td>
-</tr>
-
-<tr>
-<td class="org-left">left (&lt;)</td>
-<td class="org-left">:left</td>
-</tr>
-
-<tr>
-<td class="org-left">right (&gt;)</td>
-<td class="org-left">:right</td>
-</tr>
-</tbody>
-</table>
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-</table>
+</pre>
 </div>
 </div>
 
-<div id="outline-container-org545ec66" class="outline-3">
-<h3 id="org545ec66"><span class="section-number-3">2.4</span> make-tracks</h3>
+<div id="outline-container-org3957b59" class="outline-3">
+<h3 id="org3957b59"><span class="section-number-3">2.4</span> make-tracks</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 :in: tracks-n-carts (see above)
@@ -458,8 +415,8 @@ or as a data structure:
 </div>
 </div>
 
-<div id="outline-container-orgdf3826b" class="outline-3">
-<h3 id="orgdf3826b"><span class="section-number-3">2.5</span> make-carts</h3>
+<div id="outline-container-org39eee10" class="outline-3">
+<h3 id="org39eee10"><span class="section-number-3">2.5</span> make-carts</h3>
 <div class="outline-text-3" id="text-2-5">
 <p>
 :in: tracks-n-carts
@@ -469,8 +426,8 @@ or as a data structure:
 </div>
 </div>
 
-<div id="outline-container-org9e2deb3" class="outline-3">
-<h3 id="org9e2deb3"><span class="section-number-3">2.6</span> any-collisions?</h3>
+<div id="outline-container-org21139b2" class="outline-3">
+<h3 id="org21139b2"><span class="section-number-3">2.6</span> any-collisions?</h3>
 <div class="outline-text-3" id="text-2-6">
 <p>
 :in: carts
@@ -481,7 +438,7 @@ check to see if any of the carts now occupy the same coordinates
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2019-01-11 Fri 17:08</p>
+<p class="date">Created: 2019-01-11 Fri 17:23</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

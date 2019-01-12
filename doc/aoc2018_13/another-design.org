@@ -56,23 +56,23 @@ coord/dir/next-turn.
 
 #+BEGIN_SRC clojure
   (def tracks-n-carts 
-    [{:x 1 :y 3 :symbol :inter}
+    [{:x 1 :y 3 :symbol :int}
      {:x 1 :y 2 :symbol :vert}])
 #+END_SRC
 
+: all input symbols: |-/\+v^<>
+
 ~:symbol~ can be any of:
 
-| pipe             | :vert  |
-| dash (-)         | :horiz |
-| forward slash    | :fs    |
-| back slash       | :bs    |
-| intersection (+) | :int   |
-| down (v)         | :down  |
-| up (^)           | :up    |
-| left (<)         | :left  |
-| right (>)        | :right |
-
-|-/\+v^<>
+: pipe |          :vert
+: dash -          :horiz
+: forward slash / :fs
+: backslash \     :bs
+: intersection +  :int
+: down v          :down
+: up ^            :up
+: left <          :left
+: right >         :right
 
 ** make-tracks
 :in: tracks-n-carts (see above)
