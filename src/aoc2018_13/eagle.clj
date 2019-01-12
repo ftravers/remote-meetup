@@ -76,12 +76,12 @@
 (defn flatten-sorted-carts [row2col2cart] {:pre [(sorted-carts? row2col2cart)] :post [(every? cart? %)]}
   (flatten (map (partial map val) (vals row2col2cart))))
 
-(defn move-all "Expects the carts to be sorted already. Move all carts by one step. On success, return seq of (updated) carts, but not re-sorted. On crash, return coordinates."
+(defn move-all "Expects the carts to be sorted already. Move all carts by one step. On success, return an updated sorted-map of sorted-map of (updated) carts. On crash, return coordinates."
  [tracks row2col2cart]
-  {:pre [(sorted-carts? row2col2cart)] :post [(or (carts? %) (coordinates? %))]}
+  {:pre [(sorted-carts? row2col2cart)] :post [(or (sorted-carts? %) (coordinates? %))]}
   ;Not using map, because on every step we check for a crash. Hence not: (map (partial move-cart tracks) carts)
   ;Following starts with a full list of carts, instead of empty (as is common with reduce). It updates each cart. That way it can detect the first crash, too.
-  (-> (reduce
+  (reduce
         (fn [row2col2cart cart]
           (let [moved (move-cart cart)
                 pos (:pos moved)]
@@ -90,8 +90,7 @@
               (let [removed-old  (update-sorted-carts row2col2cart #_old-position=> (:pos cart) nil false)
                     inserted-new (update-sorted-carts removed-old pos moved true)]
                   inserted-new))))
-        row2col2cart (flatten-sorted-carts row2col2cart))
-      flatten-sorted-carts))
+        row2col2cart (flatten-sorted-carts row2col2cart)))
 
 (defn -main [& args]
   (let [chars (-> args first slurp parse-lines)
@@ -104,10 +103,12 @@
                             :when cart-dir]
                             {:pos {:row row-idx, :col col-idx} :dir cart-dir :turn 0})
         row2col2cart (sort-carts initial-carts)
-        find-crash (fn [row2col2cart row2col2cart]
+        find-crash (fn [row2col2cart]
                     {:pre [(sorted-carts? row2col2cart)]} ;(loop) doesn't allow preconditions. That's why we use a separate function.
-
-                )
+                    (let [new-row2col2cart-or-crash (move-all tracks row2col2cart)]
+                      (if (coordinates? new-row2col2cart-or-crash)
+                        new-row2col2cart-or-crash
+                        (recur new-row2col2cart-or-crash))))
         crash (find-crash row2col2cart)
         _ (assert (coordinates? crash))
         _ (println "Crash:" crash)
