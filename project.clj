@@ -3,9 +3,12 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.8.0"]]
+  :dependencies [[org.clojure/clojure "1.10.0"]]
+
+  ;; :profiles {:dev {:dependencies [[refactor-nrepl "2.4.0"]]}} 
 
   ;; modify below path to reflect current project
   ;; :source-paths ["src/aoc2018_13"]
   ;; :test-paths ["test/aoc2018_13"]
-  )
+  
+)
