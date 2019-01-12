@@ -84,6 +84,12 @@
        ]
      result))
 
+[1 2] > [0 3] ???
+
+{:row 1 :col 2} > {:row 2 :col 0}
+
+
+
 (defn flatten-sorted-carts [row2col2cart] {:pre [(sorted-carts? row2col2cart)] :post [(every? cart? %)]}
   (flatten (map (partial map val) (vals row2col2cart))))
 

@@ -32,7 +32,7 @@ The above is READING-ORDER.
 #+BEGIN_SRC clojure
   (def tracks
     [[\/ \- \\]
-     [\| \. \|]
+     [\| \space \|]
      [\| \. \|]])
 #+END_SRC
 
