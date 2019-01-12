@@ -44,32 +44,38 @@
   })
 
 (defn move-cart [tracks {:keys [pos dir turn] :as cart}] ;tracks is the first param, if we need to (partial move-cart tracks).
-  {:pre [(cart? cart) (tracks? tracks)] :post [(cart? %)]}
+  {:pre [(cart? cart) (tracks? tracks)] :post [(do (println "move-cart" %) true) (cart? %)]}
   (let [
         deltas (dir2delta dir)
         track (-> tracks (:row pos) (:col pos))
         turning (= track \+)
         ]
     {:pos {:row (+ (:row pos) (:row deltas)) :col (+ (:col pos) (:col deltas))}
-     :dir (if turning (-> dir&track2delta dir track) (-> dir&turn2delta dir turn))
+     :dir (if turning
+            (-> dir&track2delta (get dir) (get track))
+            (-> dir&turn2delta (get dir) (get turn)))
      :turn (if turning (mod (inc turn) 3) turn)}))
 
 (defn sorted-carts? "Validate result of sort-carts." [row2col2cart]
-  (and (sorted? row2col2cart) (every? sorted? row2col2cart) (every? (comp (partial every? cart?) vals) row2col2cart)))
+  (and (sorted? row2col2cart) (every? sorted? (vals row2col2cart)) (every? (comp (partial every? cart?) vals) (vals row2col2cart))))
 
 (defn update-sorted-carts [row2col2cart pos cart validate-place-available]
   {:pre [(sorted-carts? row2col2cart) (coordinates? pos) (or (cart? cart) (nil? cart)) (boolean? validate-place-available)]
    :post [(sorted-carts? %)]}
-  (let [row-map (or (row2col2cart (:row pos)) (sorted-map))
+  (let [row-map (get row2col2cart (:row pos) (sorted-map))
         _ (assert (or (not validate-place-available) (not (row-map (:col pos)))))
-        row-map-new (assoc row-map (:col pos) cart)]
-     (assoc row2col2cart (:row pos) row-map-new)))
+        row-map-new (assoc row-map (:col pos) cart)
+        result (assoc row2col2cart (:row pos) row-map-new)
+        ;_ (println "sorted-carts" (map type result))
+       ]
+     result))
 
 (defn sort-carts "Sort the carts as they take turns to move (depending on their current positions). Expect no crashes. Return a sorted-map {row => sorted-map { column => cart}}."
  [carts]
  {:pre [(carts? carts)] :post [(sorted-carts? %)]}
       (reduce
           (fn [row2col2cart {pos :pos :as cart}]
+              {:pre [(sorted-carts? row2col2cart)] :post [(sorted-carts? %)]}
               (update-sorted-carts row2col2cart pos cart true))
           (sorted-map)
           carts))
@@ -84,7 +90,7 @@
   ;Following starts with a full list of carts, instead of empty (as is common with reduce). It updates each cart. That way it can detect the first crash, too.
   (reduce
         (fn [row2col2cart cart]
-          (let [moved (move-cart cart)
+          (let [moved (move-cart tracks cart)
                 pos (:pos moved)]
             (if (-> row2col2cart (:row pos) (:col pos)) ;crash?
               (reduced pos) ;crash => stop reducing, return the position
@@ -101,9 +107,9 @@
         initial-carts (for [row-idx (range 0 height)
                             col-idx (range 0 width)
                             :let [cart-dir (-> chars (nth row-idx) (nth col-idx))]
-                            :when cart-dir]
+                            :when (direction-chars cart-dir)]
                             {:pos {:row row-idx, :col col-idx} :dir cart-dir :turn 0})
-        _ (println initial-carts)
+        _ (println "initial-carts" initial-carts)
         row2col2cart (sort-carts initial-carts)
         find-crash (fn [row2col2cart]
                     {:pre [(sorted-carts? row2col2cart)]} ;(loop) doesn't allow preconditions. That's why we use a separate function.
