@@ -55,7 +55,7 @@ describes the following visual tracks:
 
 * Functions breakdown
 
-** cart-next-state
+** cart-next-state - Fenton/Aaron
 :in: a cart, {:col 3 :row 2 :dir \> :next-turn :left}
 :in: tracks, (see above)
 :processing: based on the carts current location, direction, next
