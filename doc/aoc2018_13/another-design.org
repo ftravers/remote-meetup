@@ -29,19 +29,19 @@ describes the following visual tracks:
 
 #+BEGIN_SRC clojure
   (def carts
-    [{:x 3 :y 2 :dir :up :last-turn :left}
-     {:x 2 :y 1 :dir :right :last-turn :straight}])
+    [{:x 3 :y 2 :dir :up :next-turn :left}
+     {:x 2 :y 1 :dir :right :next-turn :straight}])
 #+END_SRC
 
 * Functions breakdown
 
 ** cart-next-state
-:in: a cart, {:x 3 :y 2 :dir :up :last-turn :straight}
+:in: a cart, {:x 3 :y 2 :dir :up :next-turn :straight}
 :in: tracks, (see above)
 :processing: based on the carts current location, direction, last
 turn, and the track(s) it is on, calculate its next
-coord/dir/last-turn. 
-:out: {:x 4 :y 1 :dir :right :last-turn :right} 
+coord/dir/next-turn. 
+:out: {:x 4 :y 1 :dir :right :next-turn :right} 
 
 ** get-track-segment
 :in: tracks
