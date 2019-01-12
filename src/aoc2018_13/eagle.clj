@@ -56,16 +56,20 @@
 (defn sorted-carts? "Validate result of sort-carts." [row2col2cart]
   (and (sorted? row2col2cart) (every? sorted? row2col2cart) (every? (comp (partial every? cart?) vals) row2col2cart)))
 
+(defn update-sorted-carts [row2col2cart pos cart validate-place-available]
+  {:pre [(sorted-carts? row2col2cart) (coordinates? pos) (or (cart? cart) (nil? cart)) (boolean? validate-place-available)]
+   :post [(sorted-carts? %)]}
+  (let [row-map (or (row2col2cart (:row pos)) (sorted-map))
+        _ (assert (or (not validate-place-available) (not (row-map (:col pos)))))
+        row-map-new (assoc row-map (:col pos) cart)]
+     (assoc row2col2cart (:row pos) row-map-new)))
+
 (defn sort-carts "Sort the carts as they take turns to move (depending on their current positions). Expect no crashes. Return a sorted-map {row => sorted-map { column => cart}}."
  [carts]
  {:pre [(carts? carts)] :post [(sorted-carts? %)]}
       (reduce
           (fn [row2col2cart {pos :pos :as cart}]
-              {:pre [(cart? cart)]}
-              (let [row-map (or (row2col2cart (:row pos)) (sorted-map))
-                    _ (assert (not (row-map (:col pos))))
-                    row-map-new (assoc row-map (:col pos) cart)]
-                 (assoc row2col2cart (:row pos) row-map-new)))
+              (update-sorted-carts row2col2cart pos cart true))
           (sorted-map)
           carts))
 
@@ -81,17 +85,13 @@
         (fn [row2col2cart cart]
           (let [moved (move-cart cart)
                 pos (:pos moved)]
-            (if (-> row2col2cart (:row pos) (:col pos))
-              (reduced pos)
-              moved)))
+            (if (-> row2col2cart (:row pos) (:col pos)) ;crash?
+              (reduced pos) ;crash => stop reducing, return the position
+              (let [removed-old  (update-sorted-carts row2col2cart #_old-position=> (:pos cart) nil false)
+                    inserted-new (update-sorted-carts removed-old pos moved true)]
+                  inserted-new))))
         row2col2cart (flatten-sorted-carts row2col2cart))
       flatten-sorted-carts))
-
-#_(defn detect-crash "Take the old seq. of carts, sorted. Take a new seq of carts, not re-sorted (hence in the old order, but with updated :pos). Return position map of the first crash, or nil."
-  [old new]
-  {:pre [(carts? old) (carts? new)] :post [(or (coordinates? %) (nil? %))]}
-  :TODO
-)
 
 (defn -main [& args]
   (let [chars (-> args first slurp parse-lines)
@@ -103,6 +103,13 @@
                             :let [cart-dir (-> chars (nth row-idx) (nth col-idx))]
                             :when cart-dir]
                             {:pos {:row row-idx, :col col-idx} :dir cart-dir :turn 0})
-        initial-cards-sorted (sort-carts initial-carts)
+        row2col2cart (sort-carts initial-carts)
+        find-crash (fn [row2col2cart row2col2cart]
+                    {:pre [(sorted-carts? row2col2cart)]} ;(loop) doesn't allow preconditions. That's why we use a separate function.
+
+                )
+        crash (find-crash row2col2cart)
+        _ (assert (coordinates? crash))
+        _ (println "Crash:" crash)
         ])
   )
