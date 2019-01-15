@@ -33,13 +33,8 @@ The above is READING-ORDER.
   (def sp "One space character. This makes examples in code more readable." \space)
   (def tracks
     [[\/ \- \\]
-<<<<<<< HEAD
-     [\| sp \|]
-     [\| \. \|]])
-=======
      [\| sp \|]
      [\| sp \|]])
->>>>>>> 6ba29959122d468ddc1077f35c6d642827f59acb
 #+END_SRC
 
 describes the following visual tracks:
