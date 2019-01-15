@@ -1,24 +1,18 @@
 (ns aoc2018-13.eagle)
 
 ; => seq of rows; each row is a seq of char.
-(defn parse-lines [text]
-  {:pre [(string? text)]
-   :post [(every? (partial every? char?) %)]}
+(defn parse-lines [text] {:pre [(string? text)] :post [(every? (partial every? char?) %)]}
   (let [lines (clojure.string/split text #"\n")]
-    (map seq lines)))
+    (map seq lines)
+  ))
 
 (def track-chars #{\| \- \\ \/ \+})
-
 (def direction-chars #{\^ \v \> \< })
-
 (defn tracks? [matrix]
-"check for a properly formatted track"
   (and (vector? matrix) (every? vector? matrix)
        (every? (fn [row] (every? (some-fn track-chars (partial = \space)) row)) matrix)))
 
-(defn chars-to-tracks
-  "Take output of function parse-lines. Replace any car directions
-  <>v^ with respective track direction."
+(defn chars-to-tracks "Take output of function parse-lines. Replace any car directions <>v^ with respective track direction."
   [chars]
   {:pre [(every? (partial every? char?) chars)]
    :post [(tracks? %)]}
@@ -33,18 +27,15 @@
 
 (defn cart? [{:keys [pos dir turn]}] ;Example: {:pos {:row 2 :col 5} :dir direction-character :turn 0-2 }
   (and (coordinates? pos) (direction-chars dir) (<= 0 turn 2)))
-
 (def carts? (partial every? cart?))
 
 (def dir2delta {\< {:row 0 :col -1}, \> {:row 0 :col 1}, \^ {:row -1 :col 0}, \v {:row 1 :col 0}})
-
 (def dir&track2dir { ;previous direction & new place => new direction. For impossible turns use nil.
   \< {\| nil, \- \<,  \\ \^, \/ \v}
   \> {\| nil, \- \>,  \\ \v, \/ \^}
   \^ {\| \^,  \- nil, \\ \<, \/ \>}
   \v {\| \v,  \- nil, \\ \>, \/ \<}
   }) ;not for junctions
-
 (def dir&turn2dir { ;at junctions only: ;previous direction & 0-based index of the cart's next junction turn => new direction. For impossible turns use nil.
   ; order of junction turns: left, straight, right
   \< [\v \< \^]
@@ -84,45 +75,36 @@
        ]
      result))
 
-[1 2] > [0 3] ???
-
-{:row 1 :col 2} > {:row 2 :col 0}
-
-
-
 (defn flatten-sorted-carts [row2col2cart] {:pre [(sorted-carts? row2col2cart)] :post [(every? cart? %)]}
   (flatten (map (partial map val) (vals row2col2cart))))
 
-(defn move-all
-  "Expects the carts to be sorted already. Move all carts by one
-  step. On success, return an updated sorted-map of sorted-map
-  of (updated) carts. On crash, return coordinates."
-  [tracks row2col2cart]
+(defn move-all "Expects the carts to be sorted already. Move all carts by one step. On success, return an updated sorted-map of sorted-map of (updated) carts. On crash, return coordinates."
+ [tracks row2col2cart]
   {:pre [(sorted-carts? row2col2cart)] :post [(or (sorted-carts? %) (coordinates? %))]}
-                                        ;Not using map, because on every step we check for a crash. Hence not: (map (partial move-cart tracks) carts)
-                                        ;Following starts with a full list of carts, instead of empty (as is common with reduce). It updates each cart. That way it can detect the first crash, too.
+  ;Not using map, because on every step we check for a crash. Hence not: (map (partial move-cart tracks) carts)
+  ;Following starts with a full list of carts, instead of empty (as is common with reduce). It updates each cart. That way it can detect the first crash, too.
   (reduce
-   (fn [row2col2cart cart]
-     (let [moved (move-cart tracks cart)
-           pos (:pos moved)]
-       (if (-> row2col2cart (get (:row pos)) (get (:col pos))) ;crash?
-         (reduced pos)    ;crash => stop reducing, return the position
-         (let [removed-old  (update-sorted-carts row2col2cart #_old-position=> (:pos cart) nil false)
-               inserted-new (update-sorted-carts removed-old pos moved true)]
-           inserted-new))))
-   row2col2cart (flatten-sorted-carts row2col2cart)))
+        (fn [row2col2cart cart]
+          (let [moved (move-cart tracks cart)
+                pos (:pos moved)]
+            (if (-> row2col2cart (get (:row pos)) (get (:col pos))) ;crash?
+              (reduced pos) ;crash => stop reducing, return the position
+              (let [removed-old  (update-sorted-carts row2col2cart #_old-position=> (:pos cart) nil false)
+                    inserted-new (update-sorted-carts removed-old pos moved true)]
+                  inserted-new))))
+        row2col2cart (flatten-sorted-carts row2col2cart)))
 
-(defn sort-carts "Sort the carts as they take turns to move (depending on their current positions). Expect no crashes. Return a sorted-map {row => sorted-map { column => cart}}."
-  [carts]
-  {:pre [(carts? carts)] :post [(sorted-carts? %)]}
-  (reduce
-   (fn [row2col2cart {pos :pos :as cart}]
-     {:pre [(sorted-carts? row2col2cart)] :post [(sorted-carts? %)]}
-     (update-sorted-carts row2col2cart pos cart true))
-   (sorted-map)
-   carts))
+        (defn sort-carts "Sort the carts as they take turns to move (depending on their current positions). Expect no crashes. Return a sorted-map {row => sorted-map { column => cart}}."
+         [carts]
+         {:pre [(carts? carts)] :post [(sorted-carts? %)]}
+              (reduce
+                  (fn [row2col2cart {pos :pos :as cart}]
+                      {:pre [(sorted-carts? row2col2cart)] :post [(sorted-carts? %)]}
+                      (update-sorted-carts row2col2cart pos cart true))
+                  (sorted-map)
+                  carts))
 
-(defn main [& args]
+(defn -main [& args]
   (let [chars (-> args first slurp parse-lines)
         tracks (chars-to-tracks chars)
         height (count chars)
