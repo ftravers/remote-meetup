@@ -45,15 +45,15 @@
   })
 
 (defn move-cart [tracks {:keys [pos dir turn] :as cart}] ;tracks is the first param, if we need to (partial move-cart tracks).
-  {:pre [(cart? cart) (tracks? tracks)] :post [(do (println "move-cart: old" cart "=> new:" %) true) (cart? %)]}
-  (println "dir" dir)
+  {:pre [(cart? cart) (tracks? tracks)] :post [#_(do (println "move-cart: old" cart "=> new:" %) true) (cart? %)]}
+  ;(println "dir" dir)
   ; First move, applying the current directon. Then calculate the next direction, depending on the previous direction and the new track.
   (let [
         deltas (dir2delta dir)
         new-pos {:row (+ (:row pos) (:row deltas)), :col (+ (:col pos) (:col deltas))}
         track (-> tracks (get (:row new-pos)) (get (:col new-pos)))
         turning (= track \+)
-        ] (println "turning" turning) (println "dir&track2dir dir:" (get dir&track2dir dir) "track:" track)
+        ] ;(println "turning" turning) (println "dir&track2dir dir:" (get dir&track2dir dir) "track:" track)
     {:pos new-pos
      :dir (if turning
             (-> dir&turn2dir (get dir) (get turn))
@@ -114,13 +114,13 @@
                             :let [cart-dir (-> chars (nth row-idx) (nth col-idx))]
                             :when (direction-chars cart-dir)]
                             {:pos {:row row-idx, :col col-idx} :dir cart-dir :turn 0})
-        _ (println "initial-carts" initial-carts)
+        ;_ (println "initial-carts" initial-carts)
         row2col2cart (sort-carts initial-carts)
         find-crash (fn [row2col2cart]
                     {:pre [(sorted-carts? row2col2cart)]} ;(loop) doesn't allow preconditions. That's why we use a separate function.
                     (let [new-row2col2cart-or-crash (move-all tracks row2col2cart)]
-                      (println "find-crash: row2col2cart:" row2col2cart)
-                      (println "=> new-row2col2cart-or-crash:" new-row2col2cart-or-crash)
+                      ;(println "find-crash: row2col2cart:" row2col2cart)
+                      ;(println "=> new-row2col2cart-or-crash:" new-row2col2cart-or-crash)
                       (if (sorted-carts? new-row2col2cart-or-crash)
                         (recur new-row2col2cart-or-crash)
                         new-row2col2cart-or-crash)))
