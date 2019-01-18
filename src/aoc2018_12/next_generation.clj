@@ -4,10 +4,11 @@
   (let [padded-2-plants
         (into [] (concat
                   [false false] plants [false false]))
-        new-ndx (+ 4 ndx)]
+        new-ndx (+ 2 ndx)]
     (subvec padded-2-plants
             (- new-ndx 2)
             (+ new-ndx 3))))
+
 (defn get-next-plant-state [rules neighbours]
   (if (get rules neighbours) true false))
 
