@@ -109,13 +109,10 @@
           ;; initial vector length: 1
           ;; # of steps 1 + 4
 
-<<<<<<< HEAD
           rules-str ["..... => #"]
           rules (sut/parse-all-rules rules-str)
           gen-0-str "."
           gen-0-pseudo-str "........."
-=======
->>>>>>> 8ee38033b40ef2b6aeee49dc07ecb34369edb339
           gen-0 (sut/convert-hash-2-true gen-0-str)
           should-be-gen-1 (sut/convert-hash-2-true "#####")
           is-gen-1 (sut/next-generation gen-0 rules)]
