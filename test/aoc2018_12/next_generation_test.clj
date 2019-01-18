@@ -2,13 +2,6 @@
   (:require  [clojure.test :refer :all]
              [aoc2018-12.next-generation :as sut]))
 
-(deftest pad-false-tests
-  (testing "pad false x number of times"
-    (is (= [false true false]
-           (sut/pad-false 1 [true])))
-    (is (= [false false true false false]
-           (sut/pad-false 2 [true])))))
-
 (deftest get-neighbours-tests
   (testing "getting neighbours for a given index"
     (is (= [false false true false false]
@@ -78,11 +71,7 @@
 
 (deftest next-generation-tests
   (testing "The creation of the next generation"
-    (let [rules-str ["..... => #"]
-          rules (sut/parse-all-rules rules-str)
-          gen-0-str "."
-          gen-0-pseudo-str "........."
-
+    (let [
           ;; input plants: "."
           ;; need to pad 4 empty pots on either side
           ;; to find neighbors of -2 to +2.
@@ -114,9 +103,13 @@
 
           ;; initial vector length: 1
           ;; # of steps 1 + 4
-          
+
+          rules-str ["..... => #"]
+          rules (sut/parse-all-rules rules-str)
+          gen-0-str "."
+          gen-0-pseudo-str "........."
           gen-0 (sut/convert-hash-2-true gen-0-str)
-          should-be-gen-1 (sut/convert-hash-2-true "#")
+          should-be-gen-1 (sut/convert-hash-2-true "#####")
           is-gen-1 (sut/next-generation gen-0 rules)]
       (is (= should-be-gen-1 is-gen-1)))
     ;; (is (= (sut/convert-hash-2-true (later-gens-str 1))

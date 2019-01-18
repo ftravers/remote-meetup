@@ -1,8 +1,5 @@
 (ns aoc2018-12.next-generation)
 
-(defn pad-false [num-pads in-vec]
-  nil)
-
 (defn get-neighbours [ndx plants]
   (let [padded-2-plants
         (into [] (concat
@@ -15,12 +12,11 @@
   (if (get rules neighbours) true false))
 
 (defn next-generation [curr-plants rules]
-  (map-indexed
-   (fn [idx itm]
-     (->> curr-plants
-          (get-neighbours idx)
-          (get-next-plant-state rules)))
-   (into [] (concat [false false] curr-plants [false false]))))
+  (let [padded-2-each-side (into [] (concat [false false] curr-plants [false false]))]
+    (map-indexed
+     (fn [idx itm]
+       (get-next-plant-state rules (get-neighbours idx padded-2-each-side)))
+     padded-2-each-side)))
 
 (defn convert-hash-2-true [hash-dots-str]
   (mapv (fn [x]
