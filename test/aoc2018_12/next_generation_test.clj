@@ -72,9 +72,14 @@
     (is (= true
            (get (sut/parse-all-rules rules-str)
                 [false false false true true])))
+    ;Following results in nil, but only with our test input above.
+    ;Real input will have complete 32 rules, hence any rule input
+    ;will map to either true or false.
     (is (= nil
            (get (sut/parse-all-rules rules-str)
-                [false false false false false])))))
+                [false false false false false])))
+    #_(is (= {[false false false false false] false} ;TODO
+           (sut/parse-all-rules ["..... => ."])))))
 
 (deftest next-generation-tests
   (testing "The creation of the next generation"
@@ -107,14 +112,14 @@
           ;; "... ..... ." gen0,step3
           ;; "..# ###.. ." gen1,step3
 
-          ;;  4321 01234 
+          ;;  4321 01234
           ;;  ----|--v--|
           ;; ".... ..... " gen0,step4
           ;; "..## ###.. " gen1,step4
 
           ;; initial vector length: 1
           ;; # of steps 1 + 4
-          
+
           gen-0 (sut/convert-hash-2-true gen-0-str)
           should-be-gen-1 (sut/convert-hash-2-true "#")
           is-gen-1 (sut/next-generation gen-0 rules)]
