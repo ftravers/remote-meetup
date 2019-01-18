@@ -4,10 +4,10 @@
 
 (def test-file-1 "/home/fenton/projects/remote-meetup/test/aoc2018_13/data-1.txt")
 
-(deftest main-test
-  (testing ""
-    (is (=
-         nil
-         (sut/main test-file-1)
+;; (deftest main-test
+;;   (testing ""
+;;     (is (=
+;;          nil
+;;          (sut/main test-file-1)
 
-         ) )))
+;;          ) )))

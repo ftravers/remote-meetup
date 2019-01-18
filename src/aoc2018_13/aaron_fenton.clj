@@ -8,7 +8,7 @@
       \> {:row row :col (+ 1 col)}
       \< {:row row :col (- col 1)}
       \^ {:row (- row 1) :col col}
-      \v {:row (+ row 1) :col col})))
+      \v {:row (+ row 8) :col col})))
 
 (defn next-cart-dir [next-track-segment curr-dir]
   (case next-track-segment
