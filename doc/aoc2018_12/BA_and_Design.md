@@ -1,12 +1,18 @@
 For https://adventofcode.com/2018/day/12.
 
+### Business Analysis
+## Summary of user story
+Elves grow plants in pots, which are in a row. Plants come to life and die over generations. That depends on the previous state of a pot (whether with a plant or not), and the state of its four neighbours: two to the left, two to the right. The rules apply equally to all pots.
+
+## Details and interpretation
 Input (logical, not the exact formatting of the input file):
 - String of characters, either a hash # or a dot. They represent whether whether a pot does (#) or does not (.) currently contain a plant. That gives an initial state. For example, #..##.... indicates that pots 0, 3, and 4 currently contain plants.
 The initial state begins at pot 0 and has a given width. Over generations, the state may expand to the left (negative indices) and to the right.
 
 - Rules ("notes") on how these plants spread to nearby pots.
 The example input lists "producing" roles only. However, your input includes all possible combinations (total of 2 to power of 5 = 32 rules).
-Same rules ("notes") apply to all pots.
+
+When applying rules to the two leftmost, or two rightmost, pots, imagine adding extra empty pots to the side. In other words, the rules apply to the leftmost (and the second leftmost) pot, as if there were two (or one, respectively) empty pots to their left. In the same way, the rules apply to the rightmost (and the second rightmost) pots, as if there were two (or one, respectively) empty pots to their right.
 
 ### Data structures
 ## Whether a pot contains a plant: Keyword, character or boolean?
@@ -32,4 +38,3 @@ Ensure we have 32 rules.
 ## Applying the rules
 When handling the three leftmost, or the three rightmost, pots, inject the missing pots as false (no plant).
 Leave any leftmost/rightmost pots in, even if they turn from true (#) to false (.). That's so we can format debugging output.
-
