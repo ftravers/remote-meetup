@@ -12,6 +12,10 @@
 (defn get-next-plant-state [rules neighbours]
   (if (get rules neighbours) true false))
 
+(defn trim-up-to-2-false-each-side [plants]
+
+  )
+
 (defn next-generation [curr-plants rules]
   (let [padded-2-each-side (into [] (concat [false false] curr-plants [false false]))]
     (map-indexed

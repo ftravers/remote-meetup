@@ -2,6 +2,26 @@
   (:require  [clojure.test :refer :all]
              [aoc2018-12.next-generation :as sut]))
 
+
+(deftest trim-up-to-2-false-each-side-tests
+  (testing "trimming false from ends of vector"
+    (let [plants [false false true false false]]
+      (is (= {:plants [true]
+              :left-shift 0}
+             (sut/trim-up-to-2-false-each-side plants))))
+    (let [plants [false true true false false]]
+      (is (= {:plants [true true]
+              :left-shift 1}
+             (sut/trim-up-to-2-false-each-side plants))))
+    (let [plants [true true true false false]]
+      (is (= {:plants [true true true]
+              :left-shift 2}
+             (sut/trim-up-to-2-false-each-side plants))))
+    (let [plants [false true true false true]]
+      (is (= {:plants [true true false true]
+              :left-shift 1}
+             (sut/trim-up-to-2-false-each-side plants))))))
+
 (deftest get-neighbours-tests
   (testing "getting neighbours for a given index"
     (is (= [false false true false false]
