@@ -38,3 +38,5 @@ Ensure we have 32 rules.
 ## Applying the rules
 When handling the three leftmost, or the three rightmost, pots, inject the missing pots as false (no plant).
 Leave any leftmost/rightmost pots in, even if they turn from true (#) to false (.). That's so we can format debugging output.
+
+A BA sketch: (BA_sketch.jpg)
