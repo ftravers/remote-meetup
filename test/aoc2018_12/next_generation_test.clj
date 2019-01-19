@@ -2,24 +2,36 @@
   (:require  [clojure.test :refer :all]
              [aoc2018-12.next-generation :as sut]))
 
+(deftest plant-left-shift-tests
+  (testing "how far left 0, 1 or 2 spaces to grow the plant vector"
+    (is (= 0 (sut/plant-left-shift [false false true])))
+    (is (= 1 (sut/plant-left-shift [false true true])))
+    (is (= 2 (sut/plant-left-shift [true false true])))))
+
+(deftest trim-left-tests
+  (testing "how many pots to drop from left of plant vector"
+    (is (= [true false true] (sut/trim-left [true false true])))
+    (is (= [true false true] (sut/trim-left [false true false true])))
+    (is (= [true false true] (sut/trim-left [false false true false true])))
+    (is (= [false true false true] (sut/trim-left [false false false true false true])))))
 
 (deftest trim-up-to-2-false-each-side-tests
   (testing "trimming false from ends of vector"
     (let [plants [false false true false false]]
       (is (= {:plants [true]
-              :left-shift 0}
+              :grow-left 0}
              (sut/trim-up-to-2-false-each-side plants))))
     (let [plants [false true true false false]]
       (is (= {:plants [true true]
-              :left-shift 1}
+              :grow-left 1}
              (sut/trim-up-to-2-false-each-side plants))))
     (let [plants [true true true false false]]
       (is (= {:plants [true true true]
-              :left-shift 2}
+              :grow-left 2}
              (sut/trim-up-to-2-false-each-side plants))))
     (let [plants [false true true false true]]
       (is (= {:plants [true true false true]
-              :left-shift 1}
+              :grow-left 1}
              (sut/trim-up-to-2-false-each-side plants))))))
 
 (deftest get-neighbours-tests
