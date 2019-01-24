@@ -104,7 +104,7 @@
                   (sorted-map)
                   carts))
 
-(defn -main [& args]
+(defn "Run from a folder above src. Invoke as: clj -m aoc2018-13.eagle file-path" -main [& args]
   (let [chars (-> args first slurp parse-lines)
         tracks (chars-to-tracks chars)
         height (count chars)
